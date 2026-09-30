@@ -16,6 +16,16 @@ export const LiveCamWorkspace: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
+  // Unmount cleanup to stop camera hardware
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+    };
+  }, []);
+
   // Recording timer
   useEffect(() => {
     let timer: number;

@@ -49,11 +49,36 @@ export const MediaVaultWorkspace: React.FC<MediaVaultWorkspaceProps> = ({
   };
 
   const handleDownload = (item: MediaItem) => {
-    if (!item.url) return;
-    const link = document.createElement('a');
-    link.download = `${item.title.toLowerCase().replace(/\s+/g, '-')}.${item.format.toLowerCase()}`;
-    link.href = item.url;
-    link.click();
+    let ext = 'bin';
+    if (item.type === 'image') ext = 'png';
+    else if (item.type === 'video') ext = 'mp4';
+    else if (item.type === 'voice' || item.type === 'music') ext = 'wav';
+
+    const cleanTitle = item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const filename = `${cleanTitle || 'studio-asset'}.${ext}`;
+
+    if (item.url) {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = item.url;
+      link.click();
+    } else {
+      // Create a descriptive text record for purely generated audio sessions
+      const blob = new Blob([
+        `7Camz-STUDIO Asset Manifest\n` +
+        `Title: ${item.title}\n` +
+        `Type: ${item.type}\n` +
+        `Format: ${item.format}\n` +
+        `Prompt / Script: ${item.prompt}\n` +
+        `Created: ${item.createdAt}\n`
+      ], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = `${cleanTitle || 'studio-voice'}-manifest.txt`;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
   };
 
   const getTypeIcon = (type: MediaType) => {
@@ -278,7 +303,10 @@ export const MediaVaultWorkspace: React.FC<MediaVaultWorkspaceProps> = ({
 
             <div className="flex items-center justify-between pt-2">
               <button
-                onClick={() => onDeleteItem(selectedItem.id)}
+                onClick={() => {
+                  onDeleteItem(selectedItem.id);
+                  setSelectedItem(null);
+                }}
                 className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1.5 cursor-pointer"
               >
                 <Trash2 className="w-4 h-4" />

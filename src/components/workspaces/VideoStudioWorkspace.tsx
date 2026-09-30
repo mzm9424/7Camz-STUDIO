@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MediaItem, TimelineClip } from '../../types';
+import { sampleCinematicLandscape } from '../../assets';
 import {
   Play,
   Pause,
@@ -65,9 +66,12 @@ export const VideoStudioWorkspace: React.FC<VideoStudioWorkspaceProps> = ({
   useEffect(() => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    img.src = incomingImage || '/src/assets/images/sample_cinematic_landscape_1790451823686.jpg';
+    img.src = incomingImage || sampleCinematicLandscape;
     img.onload = () => {
       bgImageRef.current = img;
+    };
+    img.onerror = () => {
+      console.warn('Fallback plate loaded');
     };
   }, [incomingImage]);
 

@@ -13,7 +13,10 @@ import { MusicStudioWorkspace } from './components/workspaces/MusicStudioWorkspa
 import { LiveCamWorkspace } from './components/workspaces/LiveCamWorkspace';
 import { MediaVaultWorkspace } from './components/workspaces/MediaVaultWorkspace';
 import { PricingWorkspace } from './components/workspaces/PricingWorkspace';
-import { BookFuaHubWorkspace } from './components/workspaces/BookFuaHubWorkspace';
+import { VisionEnhanceWorkspace } from './components/workspaces/VisionEnhanceWorkspace';
+import { DeploymentsWorkspace } from './components/workspaces/DeploymentsWorkspace';
+import { INITIAL_DEPLOYMENTS } from './utils/initialDeployments';
+import { ProjectDeployment } from './types';
 import { Globe2, ExternalLink, Heart, Sparkles } from 'lucide-react';
 
 export default function App() {
@@ -21,6 +24,7 @@ export default function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [credits, setCredits] = useState<number>(2450);
   const [mediaItems, setMediaItems] = useState<MediaItem[]>(INITIAL_MEDIA_ITEMS);
+  const [deployments, setDeployments] = useState<ProjectDeployment[]>(INITIAL_DEPLOYMENTS);
 
   // Modals
   const [isCreditModalOpen, setIsCreditModalOpen] = useState<boolean>(false);
@@ -28,13 +32,28 @@ export default function App() {
 
   // Studio cross-transfer state
   const [incomingImage, setIncomingImage] = useState<string | undefined>(undefined);
-  const [studioPrompt, setStudioPrompt] = useState<string>('');
+  const [studioImagePrompt, setStudioImagePrompt] = useState<string>('');
+  const [studioVideoPrompt, setStudioVideoPrompt] = useState<string>('');
+  const [studioVoiceScript, setStudioVoiceScript] = useState<string>('');
+  const [studioMusicPrompt, setStudioMusicPrompt] = useState<string>('');
   const [studioBpm, setStudioBpm] = useState<number>(118);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const handleAddDeployment = (dep: ProjectDeployment) => {
+    setDeployments((prev) => [dep, ...prev]);
+    showToast(`Initiated edge preview deployment for "${dep.name}".`);
+  };
+
+  const handleUpdateDeploymentStatus = (id: string, status: 'ready' | 'building' | 'error') => {
+    setDeployments((prev) =>
+      prev.map((d) => (d.id === id ? { ...d, status, deployDuration: '32s' } : d))
+    );
+    showToast(`Deployment "${id}" updated to ${status}!`);
   };
 
   const handleAddCredits = (amount: number) => {
@@ -64,13 +83,29 @@ export default function App() {
 
   const handleSendImageToVideo = (imageUrl: string, prompt: string) => {
     setIncomingImage(imageUrl);
-    setStudioPrompt(prompt);
+    setStudioVideoPrompt(prompt);
     setActiveTab('video');
     showToast('Image and camera prompt sent to Video Studio Timeline.');
   };
 
+  const handleOpenImageStudio = (imageUrl: string, prompt?: string) => {
+    setIncomingImage(imageUrl);
+    if (prompt) setStudioImagePrompt(prompt);
+    setActiveTab('image');
+    showToast('Visual loaded into Image Studio Editor.');
+  };
+
+  const handleSendToVisionLab = (imageUrl: string) => {
+    setIncomingImage(imageUrl);
+    setActiveTab('imagelab');
+    showToast('Transferred visual to Vision AI Lab for 4K Enhancement & Palette analysis.');
+  };
+
   const handleApplyBrief = (brief: StudioProjectBrief) => {
-    setStudioPrompt(brief.imagePrompt);
+    setStudioImagePrompt(brief.imagePrompt);
+    setStudioVideoPrompt(brief.videoPrompt);
+    setStudioVoiceScript(brief.voiceScript);
+    setStudioMusicPrompt(brief.musicPrompt || `${brief.musicGenre}: ${brief.musicMood}`);
     setStudioBpm(brief.musicBpm);
     showToast(`Multimodal brief "${brief.conceptTitle}" loaded into all 4 studios!`);
   };
@@ -90,7 +125,7 @@ export default function App() {
   };
 
   const handleQuickGenerate = (prompt: string) => {
-    setStudioPrompt(prompt);
+    setStudioImagePrompt(prompt);
     setActiveTab('image');
   };
 
@@ -103,6 +138,8 @@ export default function App() {
         credits={credits}
         onOpenCreditModal={() => setIsCreditModalOpen(true)}
         onOpenDirectorModal={() => setIsDirectorModalOpen(true)}
+        onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
+        isSidebarOpen={!isSidebarCollapsed}
       />
 
       {/* Main Studio Body: Sidebar + Main Content Viewport */}
@@ -135,10 +172,12 @@ export default function App() {
             <ImageStudioWorkspace
               onSaveToVault={handleSaveToVault}
               onSendToVideo={handleSendImageToVideo}
+              onSendToVisionLab={handleSendToVisionLab}
               credits={credits}
               onDeductCredits={handleDeductCredits}
               onOpenCreditModal={() => setIsCreditModalOpen(true)}
-              initialPrompt={studioPrompt}
+              initialPrompt={studioImagePrompt}
+              incomingImage={incomingImage}
             />
           )}
 
@@ -149,7 +188,7 @@ export default function App() {
               onDeductCredits={handleDeductCredits}
               onOpenCreditModal={() => setIsCreditModalOpen(true)}
               incomingImage={incomingImage}
-              incomingPrompt={studioPrompt}
+              incomingPrompt={studioVideoPrompt}
             />
           )}
 
@@ -159,7 +198,7 @@ export default function App() {
               credits={credits}
               onDeductCredits={handleDeductCredits}
               onOpenCreditModal={() => setIsCreditModalOpen(true)}
-              initialScript={studioPrompt}
+              initialScript={studioVoiceScript}
             />
           )}
 
@@ -169,7 +208,7 @@ export default function App() {
               credits={credits}
               onDeductCredits={handleDeductCredits}
               onOpenCreditModal={() => setIsCreditModalOpen(true)}
-              initialPrompt={studioPrompt}
+              initialPrompt={studioMusicPrompt}
               initialBpm={studioBpm}
             />
           )}
@@ -184,6 +223,16 @@ export default function App() {
             />
           )}
 
+          {activeTab === 'deployments' && (
+            <DeploymentsWorkspace
+              deployments={deployments}
+              onAddDeployment={handleAddDeployment}
+              onUpdateDeploymentStatus={handleUpdateDeploymentStatus}
+              mediaItems={mediaItems}
+              onOpenCreditModal={() => setIsCreditModalOpen(true)}
+            />
+          )}
+
           {activeTab === 'pricing' && (
             <PricingWorkspace
               currentCredits={credits}
@@ -191,49 +240,76 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'bookfua' && (
-            <BookFuaHubWorkspace
+          {activeTab === 'imagelab' && (
+            <VisionEnhanceWorkspace
+              onSaveToVault={handleSaveToVault}
+              onSendToVideo={handleSendImageToVideo}
+              onOpenImageStudio={handleOpenImageStudio}
+              credits={credits}
+              onDeductCredits={handleDeductCredits}
               onOpenCreditModal={() => setIsCreditModalOpen(true)}
             />
           )}
         </main>
       </div>
 
-      {/* BookFUA & Fuaprint Studios Complementary Footer */}
+      {/* Studio Workstation Global Footer */}
       <footer className="border-t border-slate-800/80 bg-[#060911] text-xs text-slate-400 py-6 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="font-bold text-white font-display">7Camz-STUDIO</span>
             <span className="text-slate-600">·</span>
-            <span className="text-slate-400">In synergy with</span>
-            <a
-              href="https://bookfua.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1 transition-colors"
-            >
-              <span>Fuaprint Studios (bookfua.com)</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
+            <span className="text-slate-400">Production-Grade All-in-One Creative Workstation</span>
           </div>
 
-          <div className="text-center md:text-right text-slate-400 text-[11px]">
-            <span className="text-slate-300 italic">"We decorate the world with premium digital solutions"</span>
-            <span className="mx-2 text-slate-600">·</span>
-            <a
-              href="https://app.bookfua.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-400 hover:text-white transition-colors"
-            >
-              app.bookfua.com
-            </a>
-            <span className="mx-2 text-slate-600">·</span>
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 text-slate-400 text-[11px]">
             <button
-              onClick={() => setActiveTab('bookfua')}
-              className="text-cyan-400 hover:underline cursor-pointer"
+              onClick={() => setActiveTab('imagelab')}
+              className="text-cyan-400 hover:text-cyan-300 font-medium cursor-pointer transition-colors"
             >
-              BookFUA Hub
+              Vision AI Lab
+            </button>
+            <span className="text-slate-700">·</span>
+            <button
+              onClick={() => setActiveTab('image')}
+              className="hover:text-white cursor-pointer transition-colors"
+            >
+              Image Studio
+            </button>
+            <span className="text-slate-700">·</span>
+            <button
+              onClick={() => setActiveTab('video')}
+              className="hover:text-white cursor-pointer transition-colors"
+            >
+              Video Studio
+            </button>
+            <span className="text-slate-700">·</span>
+            <button
+              onClick={() => setActiveTab('voice')}
+              className="hover:text-white cursor-pointer transition-colors"
+            >
+              Voice Lab
+            </button>
+            <span className="text-slate-700">·</span>
+            <button
+              onClick={() => setActiveTab('music')}
+              className="hover:text-white cursor-pointer transition-colors"
+            >
+              Music Studio
+            </button>
+            <span className="text-slate-700">·</span>
+            <button
+              onClick={() => setActiveTab('deployments')}
+              className="hover:text-white cursor-pointer transition-colors"
+            >
+              Deployments
+            </button>
+            <span className="text-slate-700">·</span>
+            <button
+              onClick={() => setActiveTab('pricing')}
+              className="hover:text-white cursor-pointer transition-colors"
+            >
+              Credit Packs
             </button>
           </div>
         </div>

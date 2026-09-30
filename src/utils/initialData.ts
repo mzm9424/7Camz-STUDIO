@@ -1,12 +1,18 @@
 import { MediaItem, VoicePreset, CreditPlan, StemChannel } from '../types';
+import {
+  heroMultimediaStudio,
+  samplePortraitCyber,
+  sampleCinematicLandscape,
+  sampleAudioVisualizer,
+} from '../assets';
 
 export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
   {
     id: 'med-01',
     title: 'Neon Odyssey 2099',
     type: 'image',
-    url: '/src/assets/images/sample_cinematic_landscape_1790451823686.jpg',
-    thumbnail: '/src/assets/images/sample_cinematic_landscape_1790451823686.jpg',
+    url: sampleCinematicLandscape,
+    thumbnail: sampleCinematicLandscape,
     prompt: 'Cinematic wide-angle view of a futuristic neon city canyon with flying vehicles and glowing architectural glass towers at dusk, golden hour rim reflections, 8k aesthetic',
     createdAt: '12 minutes ago',
     tags: ['Sci-Fi', 'Metropolis', '8K', 'Lighting'],
@@ -18,8 +24,8 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     id: 'med-02',
     title: 'Holographic Soundscape',
     type: 'music',
-    url: '/src/assets/images/sample_album_cover_1790451833082.jpg',
-    thumbnail: '/src/assets/images/sample_album_cover_1790451833082.jpg',
+    url: sampleAudioVisualizer,
+    thumbnail: sampleAudioVisualizer,
     prompt: 'Surreal cosmic soundwave album artwork, vibrant fluid soundwaves intertwining with a glowing celestial sphere',
     createdAt: '38 minutes ago',
     tags: ['Synthwave', '118 BPM', 'Atmospheric', 'Stereo Stems'],
@@ -31,8 +37,8 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     id: 'med-03',
     title: 'Synthetic Empathy v2',
     type: 'image',
-    url: '/src/assets/images/sample_portrait_cyber_1790451811965.jpg',
-    thumbnail: '/src/assets/images/sample_portrait_cyber_1790451811965.jpg',
+    url: samplePortraitCyber,
+    thumbnail: samplePortraitCyber,
     prompt: 'Cinematic portrait of a futuristic digital creator wearing studio monitor headphones, subtle iridescent holographic reflection, soft rim lighting',
     createdAt: '1 hour ago',
     tags: ['Cyberpunk', 'Character', 'Studio Light', 'Portrait'],
@@ -44,8 +50,8 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     id: 'med-04',
     title: 'Cyber City Flythrough',
     type: 'video',
-    url: '/src/assets/images/sample_cinematic_landscape_1790451823686.jpg',
-    thumbnail: '/src/assets/images/sample_cinematic_landscape_1790451823686.jpg',
+    url: sampleCinematicLandscape,
+    thumbnail: sampleCinematicLandscape,
     prompt: 'Continuous aerial dolly push through neon skyscraper canyons, atmospheric fog, rain droplets on camera lens, 60fps',
     createdAt: '2 hours ago',
     tags: ['Motion 4K', 'Dolly Push', '60 FPS', 'HDR'],

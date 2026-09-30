@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { WorkspaceType, MediaItem, StudioProjectBrief } from '../../types';
+import { heroMultimediaStudio } from '../../assets';
 import {
   Sparkles,
   Image as ImageIcon,
@@ -18,6 +19,9 @@ import {
   ExternalLink,
   GraduationCap,
   Award,
+  Rocket,
+  GitBranch,
+  Palette,
 } from 'lucide-react';
 
 interface OverviewWorkspaceProps {
@@ -58,7 +62,7 @@ export const OverviewWorkspace: React.FC<OverviewWorkspaceProps> = ({
       <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-[#0e1422] shadow-2xl">
         <div className="absolute inset-0 z-0">
           <img
-            src="/src/assets/images/hero_multimedia_studio_1790451799150.jpg"
+            src={heroMultimediaStudio}
             alt="7Camz-STUDIO Multimedia Workstation"
             className="w-full h-full object-cover object-center opacity-30 filter saturate-150"
             referrerPolicy="no-referrer"
@@ -301,69 +305,192 @@ export const OverviewWorkspace: React.FC<OverviewWorkspaceProps> = ({
         </div>
       </div>
 
-      {/* BookFUA & Fuaprint Studios Official Ecosystem Synergy Banner */}
-      <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-r from-[#070d18] via-[#0d1628] to-[#0a101f] border border-cyan-500/30 shadow-xl relative overflow-hidden bookfua-glow">
+      {/* Vercel & Edge Deployment Status (Faithfully inspired by the user reference image) */}
+      <div className="rounded-2xl bg-[#0b0f17] border border-slate-800 shadow-xl overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0d121c]">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-black border border-slate-700 flex items-center justify-center shrink-0 shadow-inner">
+              <svg viewBox="0 0 76 65" fill="white" className="w-4 h-4" xmlns="http://www.w3.org/2000/svg">
+                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
+              </svg>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="font-bold text-white font-mono text-sm">vercel</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 font-mono-numbers">
+                bot
+              </span>
+              <span className="text-slate-400">commented on April 14, 2022</span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setActiveTab('deployments')}
+            className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
+          >
+            <span>Open Deployments Console</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="p-4 sm:p-6 space-y-4">
+          <p className="text-xs sm:text-sm font-semibold text-slate-200">
+            The latest updates on your project.{' '}
+            <a
+              href="https://vercel.com/docs/git"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cyan-400 hover:text-cyan-300 hover:underline inline-flex items-center gap-1"
+            >
+              <span>Learn more about Vercel for Git</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </p>
+
+          <div className="overflow-x-auto rounded-xl border border-slate-800/90 bg-[#090d16]">
+            <table className="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-slate-800 bg-[#0e1422]/90 text-slate-400 font-semibold text-xs uppercase tracking-wider">
+                  <th className="py-3 px-4 sm:px-6">Name</th>
+                  <th className="py-3 px-4 sm:px-6">Status</th>
+                  <th className="py-3 px-4 sm:px-6">Preview</th>
+                  <th className="py-3 px-4 sm:px-6">Updated</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/60 font-sans text-xs">
+                <tr className="hover:bg-slate-800/30 transition-colors">
+                  <td className="py-3 px-4 sm:px-6 font-bold text-white font-mono">front</td>
+                  <td className="py-3 px-4 sm:px-6 whitespace-nowrap">
+                    <span className="text-emerald-400 mr-1.5">✅</span>
+                    <span className="font-semibold text-slate-200">Ready</span>
+                    <button
+                      onClick={() => setActiveTab('deployments')}
+                      className="text-cyan-400 hover:underline ml-1 cursor-pointer"
+                    >
+                      (Inspect)
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 sm:px-6 whitespace-nowrap">
+                    <button
+                      onClick={() => setActiveTab('deployments')}
+                      className="text-blue-400 hover:text-blue-300 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Visit Preview</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 sm:px-6 text-slate-400 font-mono-numbers whitespace-nowrap">
+                    April 14, 2022 at 5:10PM (UTC)
+                  </td>
+                </tr>
+                <tr className="hover:bg-slate-800/30 transition-colors">
+                  <td className="py-3 px-4 sm:px-6 font-bold text-white font-mono">next-site</td>
+                  <td className="py-3 px-4 sm:px-6 whitespace-nowrap">
+                    <span className="text-emerald-400 mr-1.5">✅</span>
+                    <span className="font-semibold text-slate-200">Ready</span>
+                    <button
+                      onClick={() => setActiveTab('deployments')}
+                      className="text-cyan-400 hover:underline ml-1 cursor-pointer"
+                    >
+                      (Inspect)
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 sm:px-6 whitespace-nowrap">
+                    <button
+                      onClick={() => setActiveTab('deployments')}
+                      className="text-blue-400 hover:text-blue-300 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Visit Preview</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 sm:px-6 text-slate-400 font-mono-numbers whitespace-nowrap">
+                    April 14, 2022 at 5:09PM (UTC)
+                  </td>
+                </tr>
+                <tr className="hover:bg-slate-800/30 transition-colors">
+                  <td className="py-3 px-4 sm:px-6 font-bold text-white font-mono">svelte-app</td>
+                  <td className="py-3 px-4 sm:px-6 whitespace-nowrap">
+                    <span className="text-blue-400 mr-1.5">🔄</span>
+                    <span className="font-semibold text-blue-300">Building</span>
+                    <button
+                      onClick={() => setActiveTab('deployments')}
+                      className="text-cyan-400 hover:underline ml-1 cursor-pointer"
+                    >
+                      (Inspect)
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 sm:px-6 text-slate-500 italic whitespace-nowrap">
+                    Generating preview...
+                  </td>
+                  <td className="py-3 px-4 sm:px-6 text-slate-400 font-mono-numbers whitespace-nowrap">
+                    April 14, 2022 at 5:08PM (UTC)
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Vision AI & Image Enhancement Suite Banner */}
+      <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-r from-[#070d18] via-[#0d1628] to-[#0a101f] border border-cyan-500/30 shadow-xl relative overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div className="max-w-2xl">
             <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-2">
-              <Globe2 className="w-4 h-4" />
-              <span>Official Creative Agency Integration</span>
+              <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" />
+              <span>Vision AI & 4K Image Enhancement Engine</span>
               <span className="text-slate-600">·</span>
-              <span className="text-emerald-400">bookfua.com</span>
+              <span className="text-emerald-400">Neural HDR v3.4</span>
             </div>
             <h3 className="text-xl md:text-2xl font-bold font-display text-white mb-2">
-              Powered in Synergy with Fuaprint Studios & BookFUA
+              Enhance All Creative Features with High-Fidelity Visuals
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
-              "We decorate the world with premium digital solutions." Seamlessly transition from 7Camz automated generative creation to Fuaprint Studios human post-production, branding masterclasses, and global ad campaigns.
+              Turn any image into the central anchor for your production pipeline. Super-resolve micro-textures with 4K AI Upscaling, extract harmonic color palettes, and automatically synthesize matching Video motion timelines and Music synthesizer presets.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button
-                onClick={() => setActiveTab('bookfua')}
+                onClick={() => setActiveTab('imagelab')}
                 className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg transition-all shadow-md shadow-cyan-500/20 flex items-center gap-1.5 cursor-pointer"
               >
-                <span>Launch BookFUA Hub</span>
+                <Sparkles className="w-3.5 h-3.5 text-slate-950" />
+                <span>Launch Vision AI Lab</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
 
-              <a
-                href="https://bookfua.com/"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => setActiveTab('image')}
                 className="px-4 py-2 bg-slate-900/90 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
               >
-                <span>Visit bookfua.com</span>
-                <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
-              </a>
+                <span>Image Studio & LUTs</span>
+              </button>
 
-              <a
-                href="https://app.bookfua.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 text-slate-400 hover:text-white text-xs font-medium transition-colors flex items-center gap-1"
+              <button
+                onClick={() => setActiveTab('video')}
+                className="px-4 py-2 text-slate-400 hover:text-white text-xs font-medium transition-colors flex items-center gap-1 cursor-pointer"
               >
-                <span>app.bookfua.com</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
+                <span>Send to Video Timeline</span>
+                <ArrowRight className="w-3 h-3 text-cyan-400" />
+              </button>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 shrink-0 lg:w-72">
             <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-              <Award className="w-5 h-5 text-cyan-400 mx-auto mb-1" />
-              <div className="text-xs font-bold text-white">Agency Quality</div>
-              <div className="text-[10px] text-slate-400">Fuaprint Studios</div>
+              <Sparkles className="w-5 h-5 text-cyan-400 mx-auto mb-1" />
+              <div className="text-xs font-bold text-white">4K Super-Res</div>
+              <div className="text-[10px] text-slate-400">Micro-contrast</div>
             </div>
             <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-              <GraduationCap className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-              <div className="text-xs font-bold text-white">Masterclasses</div>
-              <div className="text-[10px] text-slate-400">CapCut · AI · Ads</div>
+              <Palette className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+              <div className="text-xs font-bold text-white">Palette Extraction</div>
+              <div className="text-[10px] text-slate-400">5-Tone Harmony</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bookfua-inspired Studio Station Highlights: LiveCam & Credit Packs Banner */}
+      {/* Studio Station Highlights: LiveCam & Credit Packs Banner */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* LiveCam / OBS integration */}
         <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900 via-[#0e1628] to-slate-900 border border-slate-800 flex flex-col justify-between">

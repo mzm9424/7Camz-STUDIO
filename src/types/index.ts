@@ -6,8 +6,9 @@ export type WorkspaceType =
   | 'music' 
   | 'livecam' 
   | 'vault' 
+  | 'deployments'
   | 'pricing'
-  | 'bookfua';
+  | 'imagelab';
 
 export type MediaType = 'image' | 'video' | 'voice' | 'music';
 
@@ -91,4 +92,23 @@ export interface StudioProjectBrief {
   musicGenre: string;
   musicBpm: number;
   musicMood: string;
+  musicPrompt?: string;
 }
+
+export interface ProjectDeployment {
+  id: string;
+  name: string;
+  appFramework: 'Next.js' | 'SvelteKit' | 'React SPA' | 'HTML5 Video' | 'Audio Web Player';
+  target: 'front' | 'next-site' | 'svelte-app' | 'client-portal' | 'custom';
+  status: 'ready' | 'building' | 'error';
+  previewUrl: string;
+  updatedAt: string;
+  branch: string;
+  commitHash: string;
+  commitMessage: string;
+  assetsCount: number;
+  environment: 'production' | 'preview';
+  deployDuration: string;
+  logs: string[];
+}
+

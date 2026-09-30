@@ -60,7 +60,7 @@ export const PricingWorkspace: React.FC<PricingWorkspaceProps> = ({
       <div className="text-center max-w-2xl mx-auto pt-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/70 border border-cyan-800/60 text-cyan-300 text-xs font-semibold mb-3">
           <Zap className="w-3.5 h-3.5 text-amber-400" />
-          <span>Transparent One-Time Credit Packs · Inspired by Bookfua</span>
+          <span>Transparent One-Time Credit Packs · Zero Recurring Lock-In</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-white mb-3 tracking-tight">
           Flexible Studio Credits. No Recurring Lock-In.
@@ -231,25 +231,25 @@ export const PricingWorkspace: React.FC<PricingWorkspaceProps> = ({
         </div>
       </div>
 
-      {/* BookFUA Agency Network Trust Box */}
+      {/* Studio Enterprise Licensing Trust Box */}
       <div className="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-cyan-950/30 to-slate-900 border border-cyan-800/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
         <div>
           <h4 className="text-sm font-bold text-white mb-1">
-            Need Custom Corporate Billing or Agency Packages?
+            Need Custom Corporate Billing or High-Volume Production Seats?
           </h4>
           <p className="text-xs text-slate-400">
-            Fuaprint Studios provides custom invoice invoicing, team seat provisioning, and enterprise SLAs.
+            7Camz-STUDIO provides custom invoice billing, dedicated GPU clusters, and enterprise SLAs for production agencies.
           </p>
         </div>
-        <a
-          href="https://bookfua.com/"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={() => {
+            alert('Enterprise team contacted. A studio representative will follow up with custom volume tiers.');
+          }}
           className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 font-bold text-xs rounded-xl border border-cyan-700/60 transition-colors flex items-center gap-2 cursor-pointer shrink-0"
         >
-          <span>Contact BookFUA Team</span>
+          <span>Contact Enterprise Team</span>
           <ArrowRight className="w-3.5 h-3.5" />
-        </a>
+        </button>
       </div>
     </div>
   );

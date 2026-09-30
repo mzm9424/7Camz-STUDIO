@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ImageAdjustments, MediaItem } from '../../types';
 import {
+  sampleCinematicLandscape,
+  samplePortraitCyber,
+  sampleAudioVisualizer,
+} from '../../assets';
+import {
   Wand2,
   Sliders,
   Download,
@@ -20,10 +25,12 @@ import {
 interface ImageStudioWorkspaceProps {
   onSaveToVault: (item: MediaItem) => void;
   onSendToVideo: (imageUrl: string, prompt: string) => void;
+  onSendToVisionLab?: (imageUrl: string) => void;
   credits: number;
   onDeductCredits: (amount: number) => boolean;
   onOpenCreditModal: () => void;
   initialPrompt?: string;
+  incomingImage?: string;
 }
 
 const STYLE_PRESETS = [
@@ -42,6 +49,8 @@ export const ImageStudioWorkspace: React.FC<ImageStudioWorkspaceProps> = ({
   onDeductCredits,
   onOpenCreditModal,
   initialPrompt,
+  incomingImage,
+  onSendToVisionLab,
 }) => {
   const [prompt, setPrompt] = useState<string>(
     initialPrompt || 'Cinematic portrait of a futuristic digital creator wearing studio monitor headphones, subtle iridescent holographic reflection'
@@ -56,8 +65,23 @@ export const ImageStudioWorkspace: React.FC<ImageStudioWorkspaceProps> = ({
 
   // Active image URL (starts with high-res generated asset)
   const [currentImageSrc, setCurrentImageSrc] = useState<string>(
-    '/src/assets/images/sample_cinematic_landscape_1790451823686.jpg'
+    incomingImage || sampleCinematicLandscape
   );
+
+  // Sync incoming image from other studios or Vision AI Lab
+  useEffect(() => {
+    if (incomingImage) {
+      setCurrentImageSrc(incomingImage);
+      setActiveTab('edit');
+    }
+  }, [incomingImage]);
+
+  // Sync incoming prompt from Director or Quick Prompt
+  useEffect(() => {
+    if (initialPrompt) {
+      setPrompt(initialPrompt);
+    }
+  }, [initialPrompt]);
 
   // Image editing adjustments
   const [adjustments, setAdjustments] = useState<ImageAdjustments>({
@@ -173,6 +197,20 @@ export const ImageStudioWorkspace: React.FC<ImageStudioWorkspaceProps> = ({
     setRemoveBgActive(false);
   };
 
+  const handleAutoEnhance = () => {
+    setAdjustments({
+      brightness: 106,
+      contrast: 114,
+      saturation: 118,
+      blur: 0,
+      hueRotate: 0,
+      sepia: 0,
+      vignette: 15,
+      aspectRatio,
+    });
+    setActiveLut('vivid');
+  };
+
   const handleEnhancePrompt = () => {
     const styleObj = STYLE_PRESETS.find((s) => s.id === selectedStyle);
     const addition = styleObj ? styleObj.promptSuffix : 'award winning masterpiece, 8k resolution, photorealistic';
@@ -192,9 +230,9 @@ export const ImageStudioWorkspace: React.FC<ImageStudioWorkspaceProps> = ({
     setTimeout(() => {
       // Rotate among pristine generated studio assets
       const sampleAssets = [
-        '/src/assets/images/sample_cinematic_landscape_1790451823686.jpg',
-        '/src/assets/images/sample_portrait_cyber_1790451811965.jpg',
-        '/src/assets/images/sample_album_cover_1790451833082.jpg',
+        sampleCinematicLandscape,
+        samplePortraitCyber,
+        sampleAudioVisualizer,
       ];
       const nextImg = sampleAssets[Math.floor(Math.random() * sampleAssets.length)];
       setCurrentImageSrc(nextImg);
@@ -416,14 +454,24 @@ export const ImageStudioWorkspace: React.FC<ImageStudioWorkspaceProps> = ({
                   <Sliders className="w-4 h-4 text-cyan-400" />
                   <span>Color & Lighting Adjustments</span>
                 </span>
-                <button
-                  onClick={handleResetAdjustments}
-                  className="text-xs text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer"
-                  title="Reset to default values"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Reset</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleAutoEnhance}
+                    className="px-2 py-1 text-xs bg-cyan-950 hover:bg-cyan-900 text-cyan-300 rounded-lg border border-cyan-800 flex items-center gap-1 cursor-pointer transition-colors"
+                    title="1-Click Intelligent Color & Contrast Balance"
+                  >
+                    <Sparkles className="w-3 h-3 text-cyan-400" />
+                    <span>Auto-Enhance</span>
+                  </button>
+                  <button
+                    onClick={handleResetAdjustments}
+                    className="text-xs text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer"
+                    title="Reset to default values"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Reset</span>
+                  </button>
+                </div>
               </div>
 
               {/* Sliders list */}
@@ -652,13 +700,26 @@ export const ImageStudioWorkspace: React.FC<ImageStudioWorkspaceProps> = ({
               </button>
             </div>
 
-            <button
-              onClick={() => onSendToVideo(currentImageSrc, prompt)}
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs rounded-lg transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap"
-            >
-              <Film className="w-4 h-4 text-blue-200" />
-              <span>Send Image to Video Studio</span>
-            </button>
+            <div className="flex items-center gap-2">
+              {onSendToVisionLab && (
+                <button
+                  onClick={() => onSendToVisionLab(currentImageSrc)}
+                  className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-300 font-semibold text-xs rounded-lg border border-cyan-800/60 transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  title="Open in Vision AI Lab for 4K Super-Resolution & Palette extraction"
+                >
+                  <Sparkles className="w-4 h-4 text-cyan-400" />
+                  <span>Upscale in Vision Lab</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => onSendToVideo(currentImageSrc, prompt)}
+                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs rounded-lg transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap"
+              >
+                <Film className="w-4 h-4 text-blue-200" />
+                <span>Send Image to Video Studio</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

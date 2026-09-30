@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Sparkles,
   Zap,
+  Rocket,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -44,47 +45,63 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'music', label: 'Music Studio', icon: Music2 },
     { id: 'livecam', label: 'LiveCam & OBS', icon: Video },
     { id: 'vault', label: 'Media Vault', icon: FolderArchive },
-    { id: 'bookfua', label: 'BookFUA Hub', icon: Globe2, highlight: true },
+    { id: 'deployments', label: 'Deployments', icon: Rocket },
+    { id: 'imagelab', label: 'Vision AI Lab', icon: Sparkles, highlight: true },
     { id: 'pricing', label: 'Credit Packs', icon: CreditCard },
   ];
 
   return (
-    <aside
-      className={`fixed lg:sticky top-[53px] h-[calc(100vh-53px)] z-30 flex flex-col justify-between bg-[#0b0f17] border-r border-slate-800/80 transition-all duration-200 shrink-0 ${
-        isCollapsed ? 'w-16' : 'w-64'
-      }`}
-    >
-      {/* Navigation list */}
-      <div className="p-3 space-y-1">
-        <div className="flex items-center justify-between px-2 py-2 mb-2">
-          {!isCollapsed && (
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-              Workspaces
-            </span>
-          )}
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors ml-auto cursor-pointer"
-            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
-        </div>
+    <>
+      {/* Mobile backdrop overlay */}
+      {!isCollapsed && (
+        <div
+          onClick={() => setIsCollapsed(true)}
+          className="fixed inset-0 top-[53px] bg-black/60 backdrop-blur-xs z-25 lg:hidden animate-fade-in"
+          aria-hidden="true"
+        />
+      )}
 
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
-          return (
+      <aside
+        className={`fixed lg:sticky top-[53px] h-[calc(100vh-53px)] z-30 flex flex-col justify-between bg-[#0b0f17] border-r border-slate-800/80 transition-all duration-200 shrink-0 ${
+          isCollapsed ? '-translate-x-full lg:translate-x-0 lg:w-16' : 'translate-x-0 w-64 shadow-2xl lg:shadow-none'
+        }`}
+      >
+        {/* Navigation list */}
+        <div className="p-3 space-y-1">
+          <div className="flex items-center justify-between px-2 py-2 mb-2">
+            {!isCollapsed && (
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Workspaces
+              </span>
+            )}
             <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id as WorkspaceType)}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-                isActive
-                  ? 'bg-slate-800/90 text-cyan-300 shadow-sm border border-slate-700/60'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-              }`}
-              title={isCollapsed ? item.label : undefined}
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors ml-auto cursor-pointer"
+              title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
+              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id as WorkspaceType);
+                  if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                    setIsCollapsed(true);
+                  }
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-slate-800/90 text-cyan-300 shadow-sm border border-slate-700/60'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                }`}
+                title={isCollapsed ? item.label : undefined}
+              >
               <div className="flex items-center gap-3 truncate">
                 <Icon
                   className={`w-4 h-4 shrink-0 ${
@@ -97,28 +114,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
               {!isCollapsed && (item as any).highlight && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-mono-numbers">
-                  Agency
+                  4K AI
                 </span>
               )}
             </button>
           );
         })}
 
-        {/* BookFUA Agency Direct Link */}
+        {/* Studio Engine Status Widget */}
         {!isCollapsed && (
           <div className="pt-2">
-            <a
-              href="https://bookfua.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between p-2 rounded-lg bg-cyan-950/30 hover:bg-cyan-900/40 border border-cyan-800/50 text-cyan-300 text-xs transition-colors group"
-            >
+            <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 text-xs">
               <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                <span className="font-semibold">bookfua.com</span>
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                <span className="font-semibold text-slate-300">Vision Engine</span>
               </div>
-              <ExternalLink className="w-3 h-3 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
-            </a>
+              <span className="text-[10px] text-cyan-400 font-mono">4K Active</span>
+            </div>
           </div>
         )}
 
@@ -177,5 +189,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
     </aside>
-  );
+  </>
+);
 };

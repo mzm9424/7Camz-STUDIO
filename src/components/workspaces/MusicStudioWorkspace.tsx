@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MediaItem, StemChannel } from '../../types';
 import { INITIAL_STEMS } from '../../utils/initialData';
 import { audioEngine } from '../../utils/audioEngine';
+import { sampleAudioVisualizer } from '../../assets';
 import {
   Play,
   Square,
@@ -69,6 +70,15 @@ export const MusicStudioWorkspace: React.FC<MusicStudioWorkspaceProps> = ({
   // Sequencer timer ref
   const timerRef = useRef<number | null>(null);
 
+  // Sync incoming Director props
+  useEffect(() => {
+    if (initialPrompt) setPrompt(initialPrompt);
+  }, [initialPrompt]);
+
+  useEffect(() => {
+    if (initialBpm) setBpm(initialBpm);
+  }, [initialBpm]);
+
   // Sequencer playback loop
   useEffect(() => {
     if (isPlaying) {
@@ -79,11 +89,20 @@ export const MusicStudioWorkspace: React.FC<MusicStudioWorkspaceProps> = ({
         setCurrentStep((prev) => {
           const nextStep = (prev + 1) % 16;
 
+          // Check mute and solo statuses across stems
+          const hasSolo = stems.some((s) => s.isSolo);
+          const isAudible = (stemId: string) => {
+            const stem = stems.find((s) => s.id === stemId);
+            if (!stem) return true;
+            if (hasSolo) return stem.isSolo && !stem.isMuted;
+            return !stem.isMuted;
+          };
+
           // Check which instruments are active at nextStep
-          if (grid.kick[nextStep]) audioEngine.playKick();
-          if (grid.snare[nextStep]) audioEngine.playSnare();
-          if (grid.hihat[nextStep]) audioEngine.playHiHat();
-          if (grid.synth[nextStep]) audioEngine.playSynthBass(nextStep);
+          if (grid.kick[nextStep] && isAudible('stem-kick')) audioEngine.playKick();
+          if (grid.snare[nextStep] && isAudible('stem-snare')) audioEngine.playSnare();
+          if (grid.hihat[nextStep] && isAudible('stem-hihat')) audioEngine.playHiHat();
+          if (grid.synth[nextStep] && isAudible('stem-synth')) audioEngine.playSynthBass(nextStep);
 
           return nextStep;
         });
@@ -95,7 +114,7 @@ export const MusicStudioWorkspace: React.FC<MusicStudioWorkspaceProps> = ({
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isPlaying, bpm, grid]);
+  }, [isPlaying, bpm, grid, stems]);
 
   const togglePad = (instrument: 'kick' | 'snare' | 'hihat' | 'synth', index: number) => {
     // Audition sound on pad click
@@ -178,8 +197,8 @@ export const MusicStudioWorkspace: React.FC<MusicStudioWorkspaceProps> = ({
       id: `music-${Date.now()}`,
       title: `Track: ${prompt.slice(0, 28)}`,
       type: 'music',
-      url: '/src/assets/images/sample_album_cover_1790451833082.jpg',
-      thumbnail: '/src/assets/images/sample_album_cover_1790451833082.jpg',
+      url: sampleAudioVisualizer,
+      thumbnail: sampleAudioVisualizer,
       prompt,
       createdAt: 'Just now',
       tags: [`${bpm} BPM`, 'WAV Master', '4 Stems'],

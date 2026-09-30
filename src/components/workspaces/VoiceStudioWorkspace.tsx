@@ -65,6 +65,20 @@ export const VoiceStudioWorkspace: React.FC<VoiceStudioWorkspaceProps> = ({
   const visualizerCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
+  // Sync incoming script from Director
+  useEffect(() => {
+    if (initialScript) {
+      setScriptText(initialScript);
+    }
+  }, [initialScript]);
+
+  // Cleanup speech synthesis when unmounting
+  useEffect(() => {
+    return () => {
+      TTSEngine.stop();
+    };
+  }, []);
+
   // Audio spectrum visualization loop
   useEffect(() => {
     const canvas = visualizerCanvasRef.current;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { WorkspaceType } from '../types';
-import { Coins, Sparkles, ExternalLink, Globe2 } from 'lucide-react';
+import { Coins, Sparkles, ExternalLink, Globe2, Menu, X } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: WorkspaceType;
@@ -8,6 +8,8 @@ interface HeaderProps {
   credits: number;
   onOpenCreditModal: () => void;
   onOpenDirectorModal: () => void;
+  onToggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,35 +18,40 @@ export const Header: React.FC<HeaderProps> = ({
   credits,
   onOpenCreditModal,
   onOpenDirectorModal,
+  onToggleSidebar,
+  isSidebarOpen,
 }) => {
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between px-4 sm:px-6 py-3 bg-[#090d16]/95 backdrop-blur-md border-b border-slate-800/80">
-      {/* Zone 1: Wordmark with BookFUA Partnership Badge */}
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-40 flex items-center justify-between px-3 sm:px-6 py-3 bg-[#090d16]/95 backdrop-blur-md border-b border-slate-800/80">
+      {/* Zone 1: Wordmark with Mobile Menu Toggle & Vision AI Status */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {onToggleSidebar && (
+          <button
+            onClick={onToggleSidebar}
+            className="lg:hidden p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+            aria-label="Toggle Navigation Menu"
+          >
+            {isSidebarOpen ? <X className="w-5 h-5 text-cyan-400" /> : <Menu className="w-5 h-5" />}
+          </button>
+        )}
+
         <a
           href="#overview"
           onClick={(e) => {
             e.preventDefault();
             setActiveTab('overview');
           }}
-          className="text-lg font-bold tracking-tight text-white font-display flex items-center gap-2 hover:text-cyan-400 transition-colors shrink-0"
+          className="text-base sm:text-lg font-bold tracking-tight text-white font-display flex items-center gap-2 hover:text-cyan-400 transition-colors shrink-0"
         >
           <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
           <span>7Camz-STUDIO</span>
         </a>
 
-        {/* BookFUA Official Link Pill */}
-        <a
-          href="https://bookfua.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cyan-950/70 hover:bg-cyan-900/60 border border-cyan-800/60 text-cyan-300 text-[11px] font-medium transition-colors"
-          title="Powered in synergy with Fuaprint Studios & BookFUA.com"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-          <span>bookfua.com</span>
-          <ExternalLink className="w-3 h-3 text-cyan-400" />
-        </a>
+        {/* Vision AI Engine Status Pill */}
+        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-800/60 text-cyan-300 text-[11px] font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          <span>Vision AI 4K Active</span>
+        </div>
       </div>
 
       {/* Zone 2: Navigation Links */}
@@ -56,6 +63,15 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
         >
           Overview
+        </button>
+        <button
+          onClick={() => setActiveTab('imagelab')}
+          className={`hover:text-slate-100 transition-colors whitespace-nowrap flex items-center gap-1.5 ${
+            activeTab === 'imagelab' ? 'text-cyan-400 font-semibold border-b-2 border-cyan-400 pb-0.5' : ''
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Vision Lab</span>
         </button>
         <button
           onClick={() => setActiveTab('image')}
@@ -95,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
             activeTab === 'livecam' ? 'text-cyan-400 font-semibold border-b-2 border-cyan-400 pb-0.5' : ''
           }`}
         >
-          LiveCam / OBS
+          LiveCam
         </button>
         <button
           onClick={() => setActiveTab('vault')}
@@ -106,13 +122,13 @@ export const Header: React.FC<HeaderProps> = ({
           Vault
         </button>
         <button
-          onClick={() => setActiveTab('bookfua')}
+          onClick={() => setActiveTab('deployments')}
           className={`hover:text-slate-100 transition-colors whitespace-nowrap flex items-center gap-1.5 ${
-            activeTab === 'bookfua' ? 'text-cyan-400 font-semibold border-b-2 border-cyan-400 pb-0.5' : ''
+            activeTab === 'deployments' ? 'text-cyan-400 font-semibold border-b-2 border-cyan-400 pb-0.5' : ''
           }`}
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-          <span>BookFUA Hub</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Deployments</span>
         </button>
       </nav>
 
