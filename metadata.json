@@ -1,0 +1,6 @@
+{
+  "name": "7Camz-STUDIO - All-in-One Image, Video, Voice & Music Studio",
+  "description": "Production-grade creative studio workstation for creating and editing ultra-realistic images, videos, voice clones, and synthesized music with live timeline tools.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
